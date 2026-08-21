@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DIAT M.Tech Robotics | Semester 1 Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <h1>DIAT M.Tech Robotics | Semester 1 Tracker</h1>
+      <p>Standard syllabus tracking + custom basics, unit notes, technical practice &amp; reminders</p>
+    </div>
+    <div class="actions">
+      <button class="primary" id="exportBtn">Export progress</button>
+      <label class="file-label">Import progress
+        <input type="file" id="importFile" accept="application/json" />
+      </label>
+      <button id="collapseAllBtn">Collapse units</button>
+      <button class="danger" id="resetBtn">Reset progress</button>
+    </div>
+  </div>
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="syllabus">Syllabus</button>
+    <button class="tab-btn" data-tab="practice">Technical Practice</button>
+    <button class="tab-btn" data-tab="reminders">Reminders</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <!-- Dashboard Tab -->
+  <section id="tab-dashboard" class="tab-content active">
+    <div class="overview">
+      <div class="panel overview-left">
+        <h2>Semester progress</h2>
+        <div class="progress-wrap">
+          <div class="progress"><div id="overallBar"></div></div>
+          <strong id="overallPct">0%</strong>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="num" id="doneCount">0</div><div class="lab">Topics completed</div></div>
+          <div class="stat"><div class="num" id="totalCount">0</div><div class="lab">Total topics</div></div>
+          <div class="stat"><div class="num" id="practiceCount">0</div><div class="lab">Topics with notes</div></div>
+          <div class="stat"><div class="num" id="reminderCount">0</div><div class="lab">Reminders</div></div>
+        </div>
+        <div class="save-state" id="saveState">Progress is saved automatically in this browser.</div>
+      </div>
+      <div class="panel note-panel">
+        <h3>Working order</h3>
+        <p>Mathematics supports Robotics-I, Control, Vision, and Swarm Robotics. Physics/electronics supports Essential Concepts. Programming, DSA, ROS2, AI, and computer vision implementation can run in parallel without changing this semester sequence.</p>
+        <div class="tag-row">
+          <span class="tag">Math foundations</span><span class="tag">Mechanics</span><span class="tag">Robotics</span><span class="tag">Control</span><span class="tag">Vision</span><span class="tag">Swarm</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="panel all-courses">
+      <h3>Recommended semester sequence</h3>
+      <p>Use the sequence left-to-right. Return to the earlier course whenever a later topic exposes a missing prerequisite.</p>
+      <div class="sequence" style="margin-top:10px">
+        <span class="seq-chip">1. SR 601 Math — Unit I: vectors, matrices</span>
+        <span class="seq-chip">2. SR 605 — Unit I: force, torque, motion</span>
+        <span class="seq-chip">3. SR 601 Math — Unit III: derivatives, ODEs</span>
+        <span class="seq-chip">4. SR 602 — Units I–III: robot structure, frames, transforms</span>
+        <span class="seq-chip">5. SR 601 Math — Units IV–V: Jacobian, optimization, pseudoinverse</span>
+        <span class="seq-chip">6. SR 602 — Units IV–V: IK, Jacobian, dynamics, trajectories</span>
+        <span class="seq-chip">7. SR 604 — Units I–V: control systems and state space</span>
+        <span class="seq-chip">8. SR 603 — Units I–V: vision, geometry, calibration, tracking</span>
+        <span class="seq-chip">9. SR 605 — Units III–V: electronics, sensors, actuators</span>
+        <span class="seq-chip">10. SR 614 — Units I–V: swarm, optimization, ROS, collective control</span>
+      </div>
+    </section>
+  </section>
+
+  <!-- Syllabus Tab -->
+  <section id="tab-syllabus" class="tab-content">
+    <div class="grid">
+      <aside class="panel sidebar">
+        <div class="sidebar-inner">
+          <h3>Courses</h3>
+          <div id="courseList" class="course-list"></div>
+        </div>
+      </aside>
+
+      <section class="content">
+        <div id="courseHeader" class="panel course-header"></div>
+        <div id="units" class="units"></div>
+      </section>
+    </div>
+  </section>
+
+  <!-- Technical Practice Tab -->
+  <section id="tab-practice" class="tab-content">
+    <div class="panel practice-tracker">
+      <h3>Technical practice tracker</h3>
+      <p>Custom topics, sub-topics, notes and progress — kept separate from the standard syllabus tracking.</p>
+      <div id="practiceContent"></div>
+    </div>
+  </section>
+
+  <!-- Reminders Tab -->
+  <section id="tab-reminders" class="tab-content">
+    <div class="panel practice-tracker">
+      <h3>Reminders</h3>
+      <p>Assignments, daily exercises, and other reminders with due dates.</p>
+      <div id="remindersContent"></div>
+    </div>
+  </section>
+</main>
+
+<script src="syllabus-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
