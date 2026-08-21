@@ -22,12 +22,50 @@
     };
   }
 
+  // Normalize loaded/imported data to avoid crashes from malformed saves
+  function normalizeState(input) {
+    const base = defaultState();
+    const source = input && typeof input === 'object' ? input : {};
+    const merged = { ...base, ...source };
+
+    merged.practice = { ...base.practice, ...(source.practice || {}) };
+    if (!Array.isArray(merged.practice.topics)) {
+      merged.practice.topics = [];
+    }
+
+    if (!Array.isArray(merged.reminders)) {
+      merged.reminders = [];
+    }
+
+    if (typeof merged.done !== 'object' || merged.done === null || Array.isArray(merged.done)) {
+      merged.done = {};
+    }
+
+    if (typeof merged.notes !== 'object' || merged.notes === null || Array.isArray(merged.notes)) {
+      merged.notes = {};
+    }
+
+    if (typeof merged.unitNotes !== 'object' || merged.unitNotes === null || Array.isArray(merged.unitNotes)) {
+      merged.unitNotes = {};
+    }
+
+    if (typeof merged.opened !== 'object' || merged.opened === null || Array.isArray(merged.opened)) {
+      merged.opened = {};
+    }
+
+    if (typeof merged.subtopics !== 'object' || merged.subtopics === null || Array.isArray(merged.subtopics)) {
+      merged.subtopics = {};
+    }
+
+    return merged;
+  }
+
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        return { ...defaultState(), ...parsed };
+        return normalizeState(parsed);
       }
     } catch (e) {}
     return defaultState();
@@ -85,6 +123,7 @@
 
   function updateSaveState() {
     const el = document.getElementById('saveState');
+    if (!el) return;
     if (state.lastSaved) {
       el.textContent = 'Saved automatically: ' + new Date(state.lastSaved).toLocaleString();
     } else {
@@ -581,7 +620,7 @@
       try {
         const p = JSON.parse(reader.result);
         if (!p.state) throw new Error('Invalid file');
-        state = { ...defaultState(), ...p.state };
+        state = normalizeState(p.state);
         if (!SYLLABUS_COURSES.some(c => c.code === state.activeCourse)) {
           state.activeCourse = SYLLABUS_COURSES[0].code;
         }
@@ -624,6 +663,7 @@
     document.getElementById('resetBtn').addEventListener('click', resetData);
 
     renderAll();
+    switchTab('syllabus');
   }
 
   init();

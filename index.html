@@ -23,18 +23,49 @@
     </div>
   </div>
   <nav class="tabs">
-    
-    <button class="tab-btn" data-tab="syllabus">Syllabus</button>
+    <button class="tab-btn active" data-tab="syllabus">Syllabus</button>
     <button class="tab-btn" data-tab="practice">Technical Practice</button>
     <button class="tab-btn" data-tab="reminders">Reminders</button>
   </nav>
 </header>
 
 <main class="wrap">
- 
+  <!-- Add the overview panel that the JS expects -->
+  <section class="overview">
+    <div class="panel overview-left">
+      <h2>Semester progress</h2>
+      <div class="progress-wrap">
+        <div class="progress"><div id="overallBar"></div></div>
+        <strong id="overallPct">0%</strong>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="num" id="doneCount">0</div>
+          <div class="lab">Topics done</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="totalCount">0</div>
+          <div class="lab">Total topics</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="practiceCount">0</div>
+          <div class="lab">Notes</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="reminderCount">0</div>
+          <div class="lab">Reminders</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel note-panel">
+      <h3>Progress is local</h3>
+      <p>Progress is saved automatically in this browser using localStorage. Export to keep a backup.</p>
+      <div class="save-state" id="saveState">Progress is saved automatically in this browser.</div>
+    </div>
+  </section>
 
   <!-- Syllabus Tab -->
-  <section id="tab-syllabus" class="tab-content">
+  <section id="tab-syllabus" class="tab-content active">
     <div class="grid">
       <aside class="panel sidebar">
         <div class="sidebar-inner">
