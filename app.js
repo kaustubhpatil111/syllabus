@@ -634,6 +634,101 @@
     };
     reader.readAsText(file);
   }
+  function normalizeSubtopicList(list) {
+  if (!Array.isArray(list)) return [];
+
+  return list.map(item => {
+    if (typeof item === 'string') {
+      return { id: uid(), text: item, done: false };
+    }
+
+    if (item && typeof item === 'object') {
+      return {
+        id: item.id !== undefined && item.id !== null ? String(item.id) : uid(),
+        text: typeof item.text === 'string' ? item.text : '',
+        done: !!item.done
+      };
+    }
+
+    return { id: uid(), text: '', done: false };
+  });
+}
+
+function normalizePracticeTopic(topic) {
+  const t = topic && typeof topic === 'object' ? topic : {};
+  const subtopics = Array.isArray(t.subtopics) ? t.subtopics : [];
+
+  return {
+    id: t.id !== undefined && t.id !== null ? String(t.id) : uid(),
+    title: typeof t.title === 'string' ? t.title : '',
+    subtopics: normalizeSubtopicList(subtopics),
+    done: !!t.done,
+    note: typeof t.note === 'string' ? t.note : '',
+    reminderDate: typeof t.reminderDate === 'string' ? t.reminderDate : ''
+  };
+}
+
+function normalizeReminder(r) {
+  const reminder = r && typeof r === 'object' ? r : {};
+
+  return {
+    id: reminder.id !== undefined && reminder.id !== null ? String(reminder.id) : uid(),
+    text: typeof reminder.text === 'string' ? reminder.text : '',
+    course: typeof reminder.course === 'string' ? reminder.course : '',
+    unit: typeof reminder.unit === 'string' ? reminder.unit : '',
+    dueDate: typeof reminder.dueDate === 'string' ? reminder.dueDate : '',
+    done: !!reminder.done
+  };
+}
+
+function normalizeState(input) {
+  const base = defaultState();
+  const source = input && typeof input === 'object' ? input : {};
+  const merged = { ...base, ...source };
+
+  // Practice topics
+  merged.practice = { ...base.practice, ...(source.practice || {}) };
+
+  if (!Array.isArray(merged.practice.topics)) {
+    merged.practice.topics = [];
+  } else {
+    merged.practice.topics = merged.practice.topics.map(normalizePracticeTopic);
+  }
+
+  // Reminders
+  if (!Array.isArray(merged.reminders)) {
+    merged.reminders = [];
+  } else {
+    merged.reminders = merged.reminders.map(normalizeReminder);
+  }
+
+  // Make sure these are plain objects
+  ['done', 'notes', 'unitNotes', 'opened', 'subtopics'].forEach(key => {
+    if (
+      typeof merged[key] !== 'object' ||
+      merged[key] === null ||
+      Array.isArray(merged[key])
+    ) {
+      merged[key] = {};
+    }
+  });
+
+  // Convert syllabus subtopics from:
+  //   ["string", "string"]
+  // to:
+  //   [{ id, text, done }]
+  Object.keys(merged.subtopics).forEach(key => {
+    const value = merged.subtopics[key];
+
+    if (!Array.isArray(value)) {
+      merged.subtopics[key] = [];
+    } else {
+      merged.subtopics[key] = normalizeSubtopicList(value);
+    }
+  });
+
+  return merged;
+}
 
   function resetData() {
     if (!confirm('Reset all semester progress, notes, basics and technical practice in this browser?')) return;
